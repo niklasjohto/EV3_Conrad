@@ -1,39 +1,45 @@
+let atGameBorderLeft = sensors.color1.isColorDetected(5);
+let atGameBorderRight = sensors.color3.isColorDetected(5);
+let atGameBorderBehind = sensors.color2.isColorDetected(5);
+
 forever(function () {
-  // Color sensors to detect if Conrad is near the border
-  const atGameBorder = sensors.color1.isColorDetected(5);
-  const atGameBorderBehind = sensors.color2.isColorDetected(5);
+  atGameBorderLeft = sensors.color1.isColorDetected(5);
+  atGameBorderRight = sensors.color3.isColorDetected(5);
+  atGameBorderBehind = sensors.color2.isColorDetected(5);
 
-  // ! (Probably needs adjustments)
-  // Check if Conrad is at the border of the game
-  // If so turn a little and go backwards
-  if (atGameBorder && !atGameBorderBehind) {
-    if (sensors.gyro4.rate() <= 0) {
-      motors.largeAD.tank(-50, -35);
-    } else {
-      motors.largeAD.tank(-35, -50);
-    }
-
-    music.playSoundEffect(sounds.systemOverpower);
-
-    // Check if Conrad's behind is at the border of the game
-    // If so, speed up and go forwards
-  } else if (atGameBorderBehind) {
-    motors.largeAD.run(80);
+  if (atGameBorderBehind) {
     music.playSoundEffect(sounds.movementsSpeedUp);
+    motors.largeAD.run(100, 1000);
+  } else if (atGameBorderLeft) {
+    music.playSoundEffect(sounds.systemOverpower);
+    motors.largeAD.tank(-35, -55);
+
+    sensors.color2.pauseUntilColorDetected(ColorSensorColor.Red);
+    motors.largeAD.stop();
+  } else if (atGameBorderRight) {
+    music.playSoundEffect(sounds.systemOverpower);
+    motors.largeAD.tank(-55, -35);
+
+    sensors.color2.pauseUntilColorDetected(ColorSensorColor.Red);
+    motors.largeAD.stop();
   } else {
-    motors.largeAD.run(30);
+    motors.largeAD.run(40);
   }
 
-  // ! (Probably needs adjustment)
-  // Check if target robot is close to Conrad
-  // If so, active the medium motor and flip them over (Hopefully)
-  if (sensors.ultrasonic3.distance() <= 50) {
-    // Check if Conrad is near the border
-    // If not, speed up to get a better chance at flipping them over
-    if (!atGameBorder) {
-      motors.largeAD.run(60);
+  brick.showNumber(sensors.ultrasonic4.distance(), 1);
+  brick.showNumber(sensors.color1.color(), 2);
+  brick.showNumber(sensors.color3.color(), 3);
+  brick.showNumber(sensors.color2.color(), 4);
+});
+
+sensors.ultrasonic4.onEvent(UltrasonicSensorEvent.ObjectDetected, function () {
+  if (sensors.ultrasonic4.distance() <= 16) {
+    if (!atGameBorderLeft || !atGameBorderRight) {
+      motors.largeAD.run(100);
     }
-    motors.mediumC.ramp(100, 0, MoveUnit.MilliSeconds);
+
     music.playSoundEffect(sounds.movementsSnap);
+    motors.mediumB.run(100, 1250);
+    motors.mediumB.run(-100, 125);
   }
 });
