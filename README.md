@@ -6,4 +6,4 @@ But I needed a name for this killer machine, so I ended up naming it **Conrad**
 
 I went with a tank build that flips over the other robots
 
-(will add a picture once it's done)
+![Conrad](images/Conrad1.jpg)
