@@ -6,4 +6,6 @@ But I needed a name for this killer machine, so I ended up naming it **Conrad**
 
 I went with a tank build that flips over the other robots
 
-![Conrad](images/Conrad1.jpg)
+Although he lost the battle, he won the war, the war of love, he will forever be #1 in my heart
+
+![Conrad](images/Conrad2.jpg)
